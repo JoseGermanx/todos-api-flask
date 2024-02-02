@@ -1,3 +1,4 @@
+import json
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
@@ -11,11 +12,13 @@ todos = [
 def index():
     return jsonify(todos)
 
-@app.route('/todos', methods=['POST'])
+@app.route('/addtodos', methods=['POST'])
 def add_new_todo():
     request_body = request.get_json()
-    print("Incoming request with the following body", request_body)
-    return 'Response for the POST todo'
+    handle_diccionary_to_str = json.dumps(request_body)
+    add_todo = json.loads(handle_diccionary_to_str)
+    todos.append(add_todo)
+    return jsonify(todos)
 
 
 if __name__ == '__main__':
