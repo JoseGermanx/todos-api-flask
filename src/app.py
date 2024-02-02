@@ -20,6 +20,18 @@ def add_new_todo():
     todos.append(add_todo)
     return jsonify(todos)
 
+@app.route('/update/<int:position>', methods=['PUT'])
+def update_todos(position):
+    request_body = request.get_json()
+    if "label" in request_body:
+        todos[position]['label'] = request_body['label']
+    if "done" in request_body:
+        if request_body['done'] == True:
+            todos[position]['done'] = True
+        else:
+            todos[position]['done'] = False
+    return jsonify(todos)
+
 @app.route('/delete/<int:position>', methods=['DELETE'])
 def delete_todos(position):
     todos.pop(position)
