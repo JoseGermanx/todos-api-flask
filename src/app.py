@@ -1,10 +1,15 @@
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
+todos = [
+    { "label": "My first task", "done": False },
+    { "label": "My second task", "done": False }
+]
+
 @app.route('/todos', methods=['GET'])
 def index():
-    return 'Hello World!'
+    return jsonify(todos)
 
 
 if __name__ == '__main__':
