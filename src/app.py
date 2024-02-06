@@ -4,6 +4,8 @@ from flask import Flask, jsonify, request
 from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db, TodoModel
+from flask import jsonify
+from utils import APIException
 
 app = Flask(__name__)
 
@@ -33,25 +35,18 @@ def add_new_todo():
     db.session.commit()
     return jsonify(request_body), 200
 
-@app.route('/update/<int:position>', methods=['PUT'])
-def update_todos(position):
+@app.route('/update/<int:id>', methods=['PUT'])
+def update_todos(id):
     request_body = request.get_json()
-    todo = TodoModel.query.get(position)
+    todo = TodoModel.query.get(id)
+    if todo is None:
+        raise APIException('Id de tarea no existe', status_code=400)
     if "label" in request_body:
         todo.label = request_body['label']
     if "done" in request_body:
         todo.done = request_body['done']
+    db.session.commit()
     return jsonify(request_body), 200
-
-
-    # if "label" in request_body:
-    #     todos[position]['label'] = request_body['label']
-    # if "done" in request_body:
-    #     if request_body['done'] == True:
-    #         todos[position]['done'] = True
-    #     else:
-    #         todos[position]['done'] = False
-    # return jsonify(todos)
 
 @app.route('/delete/<int:id>', methods=['DELETE'])
 def delete_todos(id):
