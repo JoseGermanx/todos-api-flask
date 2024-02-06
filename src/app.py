@@ -1,8 +1,22 @@
+import os
 import json
 from flask import Flask, jsonify, request
+from flask_migrate import Migrate
+from flask_cors import CORS
 from models import db, TodoModel
 
 app = Flask(__name__)
+
+db_url = os.getenv("DATABASE_URL")
+if db_url is not None:
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+MIGRATE = Migrate(app, db)
+db.init_app(app)
+CORS(app)
 
 todos = [
     { "label": "My first task", "done": False },
@@ -11,7 +25,9 @@ todos = [
 
 @app.route('/todos', methods=['GET'])
 def index():
-    return jsonify(todos)
+    todos = TodoModel.query.all()
+    all_todos = list(map(lambda x: x.serialize(), todos))
+    return jsonify(all_todos), 200
 
 @app.route('/addtodos', methods=['POST'])
 def add_new_todo():
