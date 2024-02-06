@@ -48,6 +48,15 @@ def update_todos(id):
     db.session.commit()
     return jsonify(request_body), 200
 
+@app.route('/done/<int:id>', methods=['PUT'])
+def done_todos(id):
+    todo = TodoModel.query.get(id)
+    if todo is None:
+        raise APIException('Id de tarea no existe', status_code=400)
+    todo.done = True
+    db.session.commit()
+    return "Tarea actualizada"
+
 @app.route('/delete/<int:id>', methods=['DELETE'])
 def delete_todos(id):
     todo = TodoModel.query.get(id)
