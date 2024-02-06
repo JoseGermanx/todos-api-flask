@@ -36,19 +36,29 @@ def add_new_todo():
 @app.route('/update/<int:position>', methods=['PUT'])
 def update_todos(position):
     request_body = request.get_json()
+    todo = TodoModel.query.get(position)
     if "label" in request_body:
-        todos[position]['label'] = request_body['label']
+        todo.label = request_body['label']
     if "done" in request_body:
-        if request_body['done'] == True:
-            todos[position]['done'] = True
-        else:
-            todos[position]['done'] = False
-    return jsonify(todos)
+        todo.done = request_body['done']
+    return jsonify(request_body), 200
 
-@app.route('/delete/<int:position>', methods=['DELETE'])
-def delete_todos(position):
-    todos.pop(position)
-    return jsonify(todos)
+
+    # if "label" in request_body:
+    #     todos[position]['label'] = request_body['label']
+    # if "done" in request_body:
+    #     if request_body['done'] == True:
+    #         todos[position]['done'] = True
+    #     else:
+    #         todos[position]['done'] = False
+    # return jsonify(todos)
+
+@app.route('/delete/<int:id>', methods=['DELETE'])
+def delete_todos(id):
+    todo = TodoModel.query.get(id)
+    db.session.delete(todo)
+    db.session.commit()
+    return "Tarea borrada"
 
 
 if __name__ == '__main__':
