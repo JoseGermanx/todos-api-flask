@@ -55,14 +55,14 @@ def done_todos(id):
         raise APIException('Id de tarea no existe', status_code=400)
     todo.done = True
     db.session.commit()
-    return "Tarea actualizada"
+    return jsonify({"msg": "Tarea actualizada"}), 200
 
 @app.route('/delete/<int:id>', methods=['DELETE'])
 def delete_todos(id):
     todo = TodoModel.query.get(id)
     db.session.delete(todo)
     db.session.commit()
-    return "Tarea borrada"
+    return jsonify({"msg": "Tarea borrada"}), 200
 
 
 if __name__ == '__main__':
