@@ -18,10 +18,6 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 
-todos = [
-    { "label": "My first task", "done": False },
-    { "label": "My second task", "done": False }
-]
 
 @app.route('/todos', methods=['GET'])
 def index():
