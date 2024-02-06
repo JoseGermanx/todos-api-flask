@@ -32,10 +32,10 @@ def index():
 @app.route('/addtodos', methods=['POST'])
 def add_new_todo():
     request_body = request.get_json()
-    handle_diccionary_to_str = json.dumps(request_body)
-    add_todo = json.loads(handle_diccionary_to_str)
-    todos.append(add_todo)
-    return jsonify(todos)
+    todo_data = TodoModel(label=request_body['label'], done=request_body['done'])
+    db.session.add(todo_data)
+    db.session.commit()
+    return jsonify(request_body), 200
 
 @app.route('/update/<int:position>', methods=['PUT'])
 def update_todos(position):
