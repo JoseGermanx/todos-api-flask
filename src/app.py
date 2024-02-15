@@ -18,7 +18,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 MIGRATE = Migrate(app, db)
 db.init_app(app)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 
 @app.route('/todos', methods=['GET'])
@@ -30,6 +30,9 @@ def index():
 @app.route('/addtodos', methods=['POST'])
 def add_new_todo():
     request_body = request.get_json()
+    if request_body['label'] == "" :
+        return jsonify({"msg": "Falta el label"}), 404
+        
     todo_data = TodoModel(label=request_body['label'], done=request_body['done'])
     db.session.add(todo_data)
     db.session.commit()
